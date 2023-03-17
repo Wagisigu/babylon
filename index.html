@@ -73,11 +73,32 @@
     });
 
     // This creates and positions a free camera (non-mesh)
-    var camera = new BABYLON.ArcRotateCamera("Camera", 0, Math.PI * 3 / 8, 10, new BABYLON.Vector3(0, 0, 0), scene);
+    var camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2, Math.PI * 3 / 8, 10, new BABYLON.Vector3(-1.25,.5,-2), scene);
     camera.upperBetaLimit = Math.PI / 2.2;
+    camera.lowerBetaLimit = Math.PI / 2.9;
+    camera.upperRadiusLimit = 7;
+    camera.lowerRadiusLimit = 4;
+    camera.upperAlphaLimit = Math.PI * 3 / 4;
+    camera.lowerAlphaLimit = Math.PI / 4;
 
     // This attaches the camera to the canvas
     camera.attachControl(canvas, true);
+
+    scene.onKeyboardObservable.add((kbInfo) => {
+        switch (kbInfo.event.key) {
+            case "d":
+                camera.setTarget(new BABYLON.Vector3(-4.25,.5,-2));
+                camera.alpha = Math.PI / 2;
+                camera.beta = Math.PI * 3 / 8;
+                break;
+            case "a":
+                camera.setTarget(new BABYLON.Vector3(-1.25,.5,-2));
+                camera.alpha = Math.PI / 2;
+                camera.beta = Math.PI * 3 / 8;
+                break;
+        }
+    });
+
 
     // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
     var light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
