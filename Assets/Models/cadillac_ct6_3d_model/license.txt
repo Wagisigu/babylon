@@ -1,0 +1,11 @@
+Model Information:
+* title:	Cadillac CT6 3D Model
+* source:	https://sketchfab.com/3d-models/cadillac-ct6-3d-model-331a5931230440078a0cc4e42901f7d7
+* author:	IPfuentes (https://sketchfab.com/IPfuentes)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Cadillac CT6 3D Model" (https://sketchfab.com/3d-models/cadillac-ct6-3d-model-331a5931230440078a0cc4e42901f7d7) by IPfuentes (https://sketchfab.com/IPfuentes) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
