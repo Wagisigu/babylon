@@ -1,0 +1,11 @@
+Model Information:
+* title:	1963 Chevrolet Corvette C2
+* source:	https://sketchfab.com/3d-models/1963-chevrolet-corvette-c2-400563fccf9946cd95317b8787ca7df6
+* author:	Grzybek (https://sketchfab.com/Kapuriada)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "1963 Chevrolet Corvette C2" (https://sketchfab.com/3d-models/1963-chevrolet-corvette-c2-400563fccf9946cd95317b8787ca7df6) by Grzybek (https://sketchfab.com/Kapuriada) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

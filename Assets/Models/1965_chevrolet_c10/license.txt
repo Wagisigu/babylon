@@ -1,0 +1,11 @@
+Model Information:
+* title:	1965 Chevrolet C10
+* source:	https://sketchfab.com/3d-models/1965-chevrolet-c10-3d625e357197454fb4503ca1a0e7977d
+* author:	Grzybek (https://sketchfab.com/Kapuriada)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "1965 Chevrolet C10" (https://sketchfab.com/3d-models/1965-chevrolet-c10-3d625e357197454fb4503ca1a0e7977d) by Grzybek (https://sketchfab.com/Kapuriada) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
