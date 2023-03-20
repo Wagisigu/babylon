@@ -54,7 +54,7 @@
         var scene = null;
         var sceneToRender = null;
         var createDefaultEngine = function() { return new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true,  disableWebGL2Support: false}); };
-            var createScene = function () {
+                var createScene = function () {
     // This creates a basic Babylon Scene object (non-mesh)
     var scene = new BABYLON.Scene(engine);
     scene.useRightHandedSystem = false;
@@ -113,7 +113,7 @@
     var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
 
     var UiP = new BABYLON.GUI.StackPanel("vertical");
-    UiP.top = "30%";
+    UiP.top = "40%";
     UiP.fontSize = "14px";
     advancedTexture.addControl(UiP);
 
@@ -209,11 +209,11 @@
     scene.registerBeforeRender(function () {
         const viewport = camera.viewport.toGlobal(engine.getRenderWidth(), engine.getRenderHeight());
         leftButton.width = viewport.width/5 + "px";
-        leftButton.height = viewport.width/10 + "px";
+        leftButton.height = viewport.height/10 + "px";
         rightButton.width = viewport.width/5 + "px";
-        rightButton.height = viewport.width/10 + "px";
+        rightButton.height = viewport.height/10 + "px";
         configureButton.width = viewport.width/5 + "px";
-        configureButton.height = viewport.width/10 + "px";
+        configureButton.height = viewport.height/10 + "px";
 
         if (cameraMoving) {
             var locationDone = locationAdjustment();
