@@ -102,7 +102,7 @@ var createScene = function () {
     var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
 
     var UiP = new BABYLON.GUI.StackPanel("vertical");
-    UiP.top = "30%";
+    UiP.top = "40%";
     UiP.fontSize = "14px";
     advancedTexture.addControl(UiP);
 
@@ -198,11 +198,11 @@ var createScene = function () {
     scene.registerBeforeRender(function () {
         const viewport = camera.viewport.toGlobal(engine.getRenderWidth(), engine.getRenderHeight());
         leftButton.width = viewport.width/5 + "px";
-        leftButton.height = viewport.width/10 + "px";
+        leftButton.height = viewport.height/10 + "px";
         rightButton.width = viewport.width/5 + "px";
-        rightButton.height = viewport.width/10 + "px";
+        rightButton.height = viewport.height/10 + "px";
         configureButton.width = viewport.width/5 + "px";
-        configureButton.height = viewport.width/10 + "px";
+        configureButton.height = viewport.height/10 + "px";
 
         if (cameraMoving) {
             var locationDone = locationAdjustment();
