@@ -54,23 +54,12 @@
         var scene = null;
         var sceneToRender = null;
         var createDefaultEngine = function() { return new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true,  disableWebGL2Support: false}); };
-            var createScene = function () {
+var createScene = function () {
     // This creates a basic Babylon Scene object (non-mesh)
     var scene = new BABYLON.Scene(engine);
     scene.useRightHandedSystem = false;
 
-    BABYLON.SceneLoader.ImportMesh("", "https://raw.githubusercontent.com/Wagisigu/babylon/main/Assets/Models/parking_garage_free_download/", "scene.gltf", scene, function (meshes) {
-        meshes.forEach(function (mesh) {
-            mesh.scaling = new BABYLON.Vector3(1,1,1);
-        });
-    });
-    BABYLON.SceneLoader.ImportMesh("", "https://raw.githubusercontent.com/Wagisigu/babylon/main/Assets/Models/cadillac_ct6_3d_model/", "scene.gltf", scene, function (meshes) {
-        meshes[0].movePOV(-4.25,-.7,-3.25);
-    });
-    BABYLON.SceneLoader.ImportMesh("", "https://raw.githubusercontent.com/Wagisigu/babylon/main/Assets/Models/1970_chevrolet_camaro_pro_touring/", "scene.gltf", scene, function (meshes) {
-        meshes[0].movePOV(-1.25,.5,-2);
-        meshes[0].scaling = new BABYLON.Vector3(.001, .001, .001);
-    });
+    renderGarage();
 
     var cameraMoving = false;
     var cameraTarget = new BABYLON.Vector3(-1.25,.5,-2);
@@ -113,7 +102,7 @@
     var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
 
     var UiP = new BABYLON.GUI.StackPanel("vertical");
-    UiP.top = "30%";
+    UiP.top = "40%";
     UiP.fontSize = "14px";
     advancedTexture.addControl(UiP);
 
@@ -209,11 +198,11 @@
     scene.registerBeforeRender(function () {
         const viewport = camera.viewport.toGlobal(engine.getRenderWidth(), engine.getRenderHeight());
         leftButton.width = viewport.width/5 + "px";
-        leftButton.height = viewport.width/10 + "px";
+        leftButton.height = viewport.height/10 + "px";
         rightButton.width = viewport.width/5 + "px";
-        rightButton.height = viewport.width/10 + "px";
+        rightButton.height = viewport.height/10 + "px";
         configureButton.width = viewport.width/5 + "px";
-        configureButton.height = viewport.width/10 + "px";
+        configureButton.height = viewport.height/10 + "px";
 
         if (cameraMoving) {
             var locationDone = locationAdjustment();
@@ -224,9 +213,33 @@
         }
 
     });
+    
+    function renderGarage() {
+        BABYLON.SceneLoader.ImportMesh("", "https://raw.githubusercontent.com/Wagisigu/babylon/main/Assets/Models/parking_garage_free_download/", "scene.gltf", scene, function (meshes) {
+            meshes.forEach(function (mesh) {
+                mesh.scaling = new BABYLON.Vector3(1,1,1);
+            });
+            renderCar1();
+        });
+    };
+
+    function renderCar1() {
+        BABYLON.SceneLoader.ImportMesh("", "https://raw.githubusercontent.com/Wagisigu/babylon/main/Assets/Models/1970_chevrolet_camaro_pro_touring/", "scene.gltf", scene, function (meshes) {
+            meshes[0].movePOV(-1.25,.5,-2);
+            meshes[0].scaling = new BABYLON.Vector3(.001, .001, .001);
+        });
+        renderCar2();
+    };
+
+    function renderCar2() {
+        BABYLON.SceneLoader.ImportMesh("", "https://raw.githubusercontent.com/Wagisigu/babylon/main/Assets/Models/cadillac_ct6_3d_model/", "scene.gltf", scene, function (meshes) {
+            meshes[0].movePOV(-4.25,-.7,-3.25);
+        });
+    };
 
     return scene;
 };
+
                 window.initFunction = async function() {
                     
                     
