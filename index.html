@@ -54,20 +54,29 @@
         var scene = null;
         var sceneToRender = null;
         var createDefaultEngine = function() { return new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true,  disableWebGL2Support: false}); };
-var createScene = function () {
+        var createScene = function () {
     // This creates a basic Babylon Scene object (non-mesh)
     var scene = new BABYLON.Scene(engine);
     scene.useRightHandedSystem = false;
 
     renderGarage();
 
+    var index = 3;
+
+    var locations = [
+        -10,
+        -6,
+        -2,
+        2
+    ]
+
     var cameraMoving = false;
-    var cameraTarget = new BABYLON.Vector3(-1.25,.5,-2);
+    var cameraTarget = new BABYLON.Vector3(locations[index],.5,-2);
     const cameraAlpha = Math.PI / 2;
     const cameraBeta = Math.PI * 3 / 8;
 
     // This creates and positions a free camera (non-mesh)
-    var camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2, Math.PI * 3 / 8, 10, new BABYLON.Vector3(-1.25,.5,-2), scene);
+    var camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2, Math.PI * 3 / 8, 10, new BABYLON.Vector3(locations[index],.5,-2), scene);
     camera.upperBetaLimit = Math.PI / 2.2;
     camera.lowerBetaLimit = Math.PI / 2.9;
     camera.upperRadiusLimit = 7;
@@ -103,12 +112,11 @@ var createScene = function () {
 
     var UiP = new BABYLON.GUI.StackPanel("vertical");
     UiP.top = "40%";
-    UiP.fontSize = "14px";
+    UiP.fontSize = "20px";
     advancedTexture.addControl(UiP);
 
     var UiPanel = new BABYLON.GUI.StackPanel("horizontal");
     UiPanel.isVertical = false;
-    UiPanel.height = "100px";
     UiP.addControl(UiPanel);
 
     var leftButton = BABYLON.GUI.Button.CreateSimpleButton("leftButton", "<-");
@@ -117,8 +125,11 @@ var createScene = function () {
     leftButton.color = "white";
     leftButton.background = "black";
     leftButton.onPointerDownObservable.add(()=> {
-        cameraTarget = new BABYLON.Vector3(-1.25,.5,-2);
-        cameraMoving = true;
+        if (!cameraMoving) {
+            index = Math.min(locations.length-1, index+1);
+            cameraTarget = new BABYLON.Vector3(locations[index],.5,-2);
+            cameraMoving = true;
+        }
     });
     UiPanel.addControl(leftButton);
 
@@ -128,8 +139,11 @@ var createScene = function () {
     rightButton.color = "white";
     rightButton.background = "black";
     rightButton.onPointerDownObservable.add(()=> {
-        cameraTarget = new BABYLON.Vector3(-4.25,.5,-2);
-        cameraMoving = true;
+        if (!cameraMoving) {
+            index = Math.max(0, index-1);
+            cameraTarget = new BABYLON.Vector3(locations[index],.5,-2);
+            cameraMoving = true;
+        }
     });
     UiPanel.addControl(rightButton);
 
@@ -140,6 +154,32 @@ var createScene = function () {
     configureButton.color = "white";
     configureButton.background = "black";
     UiP.addControl(configureButton);
+
+    function rotationAdjustment() {
+        var alphaDone = alphaAdjustment();
+        var betaDone = betaAdjustment();
+        return alphaDone && betaDone;
+    }
+
+    scene.registerBeforeRender(function () {
+        const viewport = camera.viewport.toGlobal(engine.getRenderWidth(), engine.getRenderHeight());
+        UiPanel.heightInPixels = viewport.height/10 + 10;
+        leftButton.widthInPixels = viewport.width/5;
+        leftButton.heightInPixels = viewport.height/10;
+        rightButton.widthInPixels = viewport.width/5;
+        rightButton.heightInPixels = viewport.height/10;
+        configureButton.widthInPixels = viewport.width/5;
+        configureButton.heightInPixels = viewport.height/10;
+
+        if (cameraMoving) {
+            var locationDone = locationAdjustment();
+            var rotationDone = rotationAdjustment();
+            if (locationDone && rotationDone) {
+                cameraMoving = false;
+            }
+        }
+
+    });
 
     function locationAdjustment() {    
         if (Math.abs(cameraTarget.x - camera.target.x) > 0.05) {
@@ -188,52 +228,45 @@ var createScene = function () {
             return true;
         }
     }
-
-    function rotationAdjustment() {
-        var alphaDone = alphaAdjustment();
-        var betaDone = betaAdjustment();
-        return alphaDone && betaDone;
-    }
-
-    scene.registerBeforeRender(function () {
-        const viewport = camera.viewport.toGlobal(engine.getRenderWidth(), engine.getRenderHeight());
-        leftButton.width = viewport.width/5 + "px";
-        leftButton.height = viewport.height/10 + "px";
-        rightButton.width = viewport.width/5 + "px";
-        rightButton.height = viewport.height/10 + "px";
-        configureButton.width = viewport.width/5 + "px";
-        configureButton.height = viewport.height/10 + "px";
-
-        if (cameraMoving) {
-            var locationDone = locationAdjustment();
-            var rotationDone = rotationAdjustment();
-            if (locationDone && rotationDone) {
-                cameraMoving = false;
-            }
-        }
-
-    });
     
     function renderGarage() {
         BABYLON.SceneLoader.ImportMesh("", "https://raw.githubusercontent.com/Wagisigu/babylon/main/Assets/Models/parking_garage_free_download/", "scene.gltf", scene, function (meshes) {
-            meshes.forEach(function (mesh) {
-                mesh.scaling = new BABYLON.Vector3(1,1,1);
-            });
             renderCar1();
         });
     };
 
     function renderCar1() {
-        BABYLON.SceneLoader.ImportMesh("", "https://raw.githubusercontent.com/Wagisigu/babylon/main/Assets/Models/1970_chevrolet_camaro_pro_touring/", "scene.gltf", scene, function (meshes) {
-            meshes[0].movePOV(-1.25,.5,-2);
-            meshes[0].scaling = new BABYLON.Vector3(.001, .001, .001);
+        BABYLON.SceneLoader.ImportMesh("", "https://raw.githubusercontent.com/Wagisigu/babylon/main/Assets/Models/1953_cadillac_eldorado_convertible/", "scene.gltf", scene, function (meshes) {
+            meshes[0].movePOV(locations[0],.75,-2);
+            meshes[0].scaling = new BABYLON.Vector3(.005, .005, .005);
+            meshes[0].rotate(new BABYLON.Vector3(0,1,0), Math.PI);
         });
         renderCar2();
     };
 
     function renderCar2() {
-        BABYLON.SceneLoader.ImportMesh("", "https://raw.githubusercontent.com/Wagisigu/babylon/main/Assets/Models/cadillac_ct6_3d_model/", "scene.gltf", scene, function (meshes) {
-            meshes[0].movePOV(-4.25,-.7,-3.25);
+        BABYLON.SceneLoader.ImportMesh("", "https://raw.githubusercontent.com/Wagisigu/babylon/main/Assets/Models/1963_chevrolet_corvette_c2/", "scene.gltf", scene, function (meshes) {
+            meshes[0].movePOV(locations[1],.3,-2);
+            meshes[0].scaling = new BABYLON.Vector3(.005, .005, .005);
+            meshes[0].rotate(new BABYLON.Vector3(0,1,0), Math.PI);
+        });
+        renderCar3();
+    };
+
+    function renderCar3() {
+        BABYLON.SceneLoader.ImportMesh("", "https://raw.githubusercontent.com/Wagisigu/babylon/main/Assets/Models/1965_chevrolet_c10/", "scene.gltf", scene, function (meshes) {
+            meshes[0].movePOV(locations[2],1.2,-2);
+            meshes[0].scaling = new BABYLON.Vector3(.005, .005, .005);
+            meshes[0].rotate(new BABYLON.Vector3(0,1,0), Math.PI);
+        });
+        renderCar4();
+    };
+
+    function renderCar4() {
+        BABYLON.SceneLoader.ImportMesh("", "https://raw.githubusercontent.com/Wagisigu/babylon/main/Assets/Models/1968_chevrolet_impala/", "scene.gltf", scene, function (meshes) {
+            meshes[0].movePOV(locations[3],.175,-2);
+            meshes[0].scaling = new BABYLON.Vector3(.005, .005, .005);
+            meshes[0].rotate(new BABYLON.Vector3(0,1,0), Math.PI);
         });
     };
 
