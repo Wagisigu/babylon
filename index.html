@@ -71,6 +71,10 @@
     var advancedTexture;
     var UiP;
     var UiPanel;
+    var colors;
+    var blueButton;
+    var greenButton;
+    var redButton;
     var leftButton;
     var rightButton;
     var configureButton;
@@ -104,10 +108,17 @@
     selectorScene.registerBeforeRender(function () {
         const viewport = selectorCamera.viewport.toGlobal(engine.getRenderWidth(), engine.getRenderHeight());
         UiPanel.heightInPixels = viewport.height/10 + 10;
+        if (colors) colors.heightInPixels = viewport.height/10 + 10;
         leftButton.widthInPixels = viewport.width/5;
         leftButton.heightInPixels = viewport.height/10;
         rightButton.widthInPixels = viewport.width/5;
         rightButton.heightInPixels = viewport.height/10;
+        if (blueButton) blueButton.widthInPixels = viewport.width/5;
+        if (blueButton) blueButton.heightInPixels = viewport.height/10;
+        if (redButton) redButton.widthInPixels = viewport.width/5;
+        if (redButton) redButton.heightInPixels = viewport.height/10;
+        if (greenButton) greenButton.widthInPixels = viewport.width/5;
+        if (greenButton) greenButton.heightInPixels = viewport.height/10;
         configureButton.widthInPixels = viewport.width/5;
         configureButton.heightInPixels = viewport.height/10;
 
@@ -130,10 +141,10 @@
                     selectorCamera.lowerAlphaLimit = Math.PI / 4;
                     advancedTexture.dispose();
                     generateGUI();
-                    if (car1) car1.setEnabled(true);
-                    if (car2) car2.setEnabled(true);
-                    if (car3) car3.setEnabled(true);
-                    if (car4) car4.setEnabled(true);
+                    if (car1) car1[0].setEnabled(true);
+                    if (car2) car2[0].setEnabled(true);
+                    if (car3) car3[0].setEnabled(true);
+                    if (car4) car4[0].setEnabled(true);
                     selectorScene.render();
                     break;
                 case 1:
@@ -141,10 +152,10 @@
                     selectorCamera.lowerAlphaLimit = -Math.PI / 4;
                     advancedTexture.dispose();
                     generateCustomizerGUI();
-                    if (index!=0) car1.setEnabled(false);
-                    if (index!=1) car2.setEnabled(false);
-                    if (index!=2) car3.setEnabled(false);
-                    if (index!=3) car4.setEnabled(false);
+                    if (index!=0) car1[0].setEnabled(false);
+                    if (index!=1) car2[0].setEnabled(false);
+                    if (index!=2) car3[0].setEnabled(false);
+                    if (index!=3) car4[0].setEnabled(false);
                     selectorScene.render();
                     break;
             }
@@ -209,6 +220,41 @@
         UiP.fontSize = "20px";
         advancedTexture.addControl(UiP);
 
+        colors = new BABYLON.GUI.StackPanel("horizontal");
+        colors.isVertical = false;
+        UiP.addControl(colors);
+
+        blueButton = BABYLON.GUI.Button.CreateSimpleButton("blue", "Blue");
+        blueButton.paddingRightInPixels = 20;
+        blueButton.cornerRadius = 5;
+        blueButton.color = "white";
+        blueButton.background = "black";
+        blueButton.onPointerDownObservable.add(function () {
+            setColor(new BABYLON.Color3(0,0,1));
+        });
+        colors.addControl(blueButton);
+
+        redButton = BABYLON.GUI.Button.CreateSimpleButton("red", "Red");
+        redButton.paddingLeftInPixels = 20;
+        redButton.paddingRightInPixels = 20;
+        redButton.cornerRadius = 5;
+        redButton.color = "white";
+        redButton.background = "black";
+        redButton.onPointerDownObservable.add(function () {
+            setColor(new BABYLON.Color3(1,0,0));
+        });
+        colors.addControl(redButton);
+
+        greenButton = BABYLON.GUI.Button.CreateSimpleButton("green", "Green");
+        greenButton.paddingRightInPixels = 20;
+        greenButton.cornerRadius = 5;
+        greenButton.color = "white";
+        greenButton.background = "black";
+        greenButton.onPointerDownObservable.add(function () {
+            setColor(new BABYLON.Color3(0,1,0));
+        });
+        colors.addControl(greenButton);
+
         configureButton = BABYLON.GUI.Button.CreateSimpleButton("configureButton", "Done");
         configureButton.cornerRadius = 5;
         configureButton.color = "white";
@@ -217,6 +263,37 @@
             sceneIndicator = (sceneIndicator+1)%2;
         });
         UiP.addControl(configureButton);
+    }
+
+    function setColor(color) {
+        switch (index) {
+            case 0:
+                var material = new BABYLON.StandardMaterial("blue", selectorScene);
+                material.diffuseColor = color;
+                car1[2].material = material;
+                car1[13].material = material;
+                break;
+            case 1:
+                var material = new BABYLON.StandardMaterial("blue", selectorScene);
+                material.diffuseColor = color;
+                car2[2].material = material;
+                material.backFaceCulling = false;
+                car2[15].material = material;
+                break;
+            case 2:
+                var material = new BABYLON.StandardMaterial("blue", selectorScene);
+                material.diffuseColor = color;
+                car3[1].material = material;
+                car3[2].material = material;
+                material.backFaceCulling = false;
+                car3[16].material = material;
+                break;
+            case 3:
+                var material = new BABYLON.StandardMaterial("blue", selectorScene);
+                material.diffuseColor = color;
+                car4[1].material = material;
+                break;
+        }
     }
 
 
@@ -276,7 +353,7 @@
     
     function renderGarage() {
         BABYLON.SceneLoader.ImportMesh("", "https://raw.githubusercontent.com/Wagisigu/babylon/main/Assets/Models/parking_garage_free_download/", "scene.gltf", selectorScene, function (meshes) {
-            renderCar1();
+            renderCar4();
         });
     };
 
@@ -285,9 +362,8 @@
             meshes[0].movePOV(locations[0],.75,-2);
             meshes[0].scaling = new BABYLON.Vector3(.005, .005, .005);
             meshes[0].rotate(new BABYLON.Vector3(0,1,0), Math.PI);
-            car1 = meshes[0];
+            car1 = meshes;
         });
-        renderCar2();
     };
 
     function renderCar2() {
@@ -295,9 +371,9 @@
             meshes[0].movePOV(locations[1],.3,-2);
             meshes[0].scaling = new BABYLON.Vector3(.005, .005, .005);
             meshes[0].rotate(new BABYLON.Vector3(0,1,0), Math.PI);
-            car2 = meshes[0];
+            car2 = meshes;
+            renderCar1();
         });
-        renderCar3();
     };
 
     function renderCar3() {
@@ -305,9 +381,9 @@
             meshes[0].movePOV(locations[2],1.2,-2);
             meshes[0].scaling = new BABYLON.Vector3(.005, .005, .005);
             meshes[0].rotate(new BABYLON.Vector3(0,1,0), Math.PI);
-            car3 = meshes[0];
+            car3 = meshes;
+            renderCar2();
         });
-        renderCar4();
     };
 
     function renderCar4() {
@@ -315,7 +391,8 @@
             meshes[0].movePOV(locations[3],.175,-2);
             meshes[0].scaling = new BABYLON.Vector3(.005, .005, .005);
             meshes[0].rotate(new BABYLON.Vector3(0,1,0), Math.PI);
-            car4 = meshes[0];
+            car4 = meshes;
+            renderCar3();
         });
     };
 
