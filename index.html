@@ -55,114 +55,68 @@
         var sceneToRender = null;
         var createDefaultEngine = function() { return new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true,  disableWebGL2Support: false}); };
         var createScene = function () {
-    // This creates a basic Babylon Scene object (non-mesh)
-    var scene = new BABYLON.Scene(engine);
-    scene.useRightHandedSystem = false;
-
-    renderGarage();
-
+    
     var index = 3;
-
     var locations = [
         -10,
         -6,
         -2,
         2
     ]
-
+    var advancedTexture;
+    var UiP;
+    var UiPanel;
+    var leftButton;
+    var rightButton;
+    var configureButton;
+    var sceneIndicator = 0;
     var cameraMoving = false;
     var cameraTarget = new BABYLON.Vector3(locations[index],.5,-2);
     const cameraAlpha = Math.PI / 2;
     const cameraBeta = Math.PI * 3 / 8;
 
-    // This creates and positions a free camera (non-mesh)
-    var camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2, Math.PI * 3 / 8, 10, new BABYLON.Vector3(locations[index],.5,-2), scene);
-    camera.upperBetaLimit = Math.PI / 2.2;
-    camera.lowerBetaLimit = Math.PI / 2.9;
-    camera.upperRadiusLimit = 7;
-    camera.lowerRadiusLimit = 4;
-    camera.upperAlphaLimit = Math.PI * 3 / 4;
-    camera.lowerAlphaLimit = Math.PI / 4;
+    var selectorScene = new BABYLON.Scene(engine);
+    selectorScene.useRightHandedSystem = false;
 
-    camera.inputs.attached.pointers.multiTouchPanAndZoom = false;
-    camera.inputs.attached.pointers.multiTouchPanning = false;
+    renderGarage();
+    renderGaragex();
+    generateGUI();
 
-    // This attaches the camera to the canvas
-    camera.attachControl(canvas, true);
+    var selectorCamera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2, Math.PI * 3 / 8, 10, new BABYLON.Vector3(locations[index],.5,-2), selectorScene);
+    selectorCamera.upperBetaLimit = Math.PI / 2.2;
+    selectorCamera.lowerBetaLimit = Math.PI / 2.9;
+    selectorCamera.upperRadiusLimit = 7;
+    selectorCamera.lowerRadiusLimit = 4;
+    selectorCamera.upperAlphaLimit = Math.PI * 3 / 4;
+    selectorCamera.lowerAlphaLimit = Math.PI / 4;
 
-    scene.onKeyboardObservable.add((kbInfo) => {
-        switch (kbInfo.event.key) {
-            case "d":
-                camera.setTarget(new BABYLON.Vector3(-4.25,.5,-2));
-                camera.alpha = Math.PI / 2;
-                camera.beta = Math.PI * 3 / 8;
-                break;
-            case "a":
-                camera.setTarget(new BABYLON.Vector3(-1.25,.5,-2));
-                camera.alpha = Math.PI / 2;
-                camera.beta = Math.PI * 3 / 8;
-                break;
-        }
-    });
+    selectorCamera.inputs.attached.pointers.buttons = [0,1];
+    selectorCamera.inputs.attached.pointers.multiTouchPanAndZoom = false;
+    selectorCamera.inputs.attached.pointers.multiTouchPanning = false;
 
-    // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
-    var light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
+    selectorCamera.attachControl(canvas, true);
 
-    var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+    var light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), selectorScene);
 
-    var UiP = new BABYLON.GUI.StackPanel("vertical");
-    UiP.top = "40%";
-    UiP.fontSize = "20px";
-    advancedTexture.addControl(UiP);
+    var customizerScene = new BABYLON.Scene(engine);
+    customizerScene.useRightHandedSystem = false;
 
-    var UiPanel = new BABYLON.GUI.StackPanel("horizontal");
-    UiPanel.isVertical = false;
-    UiP.addControl(UiPanel);
+    var customizerCamera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2, Math.PI * 3 / 8, 10, new BABYLON.Vector3(0), customizerScene);
+    customizerCamera.upperBetaLimit = Math.PI / 2.2;
+    customizerCamera.lowerBetaLimit = Math.PI / 2.9;
+    customizerCamera.upperRadiusLimit = 7;
+    customizerCamera.lowerRadiusLimit = 4;
 
-    var leftButton = BABYLON.GUI.Button.CreateSimpleButton("leftButton", "<-");
-    leftButton.paddingRightInPixels = 20;
-    leftButton.cornerRadius = 5;
-    leftButton.color = "white";
-    leftButton.background = "black";
-    leftButton.onPointerDownObservable.add(()=> {
-        if (!cameraMoving) {
-            index = Math.min(locations.length-1, index+1);
-            cameraTarget = new BABYLON.Vector3(locations[index],.5,-2);
-            cameraMoving = true;
-        }
-    });
-    UiPanel.addControl(leftButton);
+    customizerCamera.inputs.attached.pointers.buttons = [0,1];
+    customizerCamera.inputs.attached.pointers.multiTouchPanAndZoom = false;
+    customizerCamera.inputs.attached.pointers.multiTouchPanning = false;
 
-    var rightButton = BABYLON.GUI.Button.CreateSimpleButton("rightButton", "->");
-    rightButton.paddingLeftInPixels = 20;
-    rightButton.cornerRadius = 5;
-    rightButton.color = "white";
-    rightButton.background = "black";
-    rightButton.onPointerDownObservable.add(()=> {
-        if (!cameraMoving) {
-            index = Math.max(0, index-1);
-            cameraTarget = new BABYLON.Vector3(locations[index],.5,-2);
-            cameraMoving = true;
-        }
-    });
-    UiPanel.addControl(rightButton);
+    customizerCamera.attachControl(canvas, true);
 
-    var configureButton = BABYLON.GUI.Button.CreateSimpleButton("configureButton", "Configure");
-    configureButton.width = "100px";
-    configureButton.height = "50px";
-    configureButton.cornerRadius = 5;
-    configureButton.color = "white";
-    configureButton.background = "black";
-    UiP.addControl(configureButton);
+    var light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), customizerScene);
 
-    function rotationAdjustment() {
-        var alphaDone = alphaAdjustment();
-        var betaDone = betaAdjustment();
-        return alphaDone && betaDone;
-    }
-
-    scene.registerBeforeRender(function () {
-        const viewport = camera.viewport.toGlobal(engine.getRenderWidth(), engine.getRenderHeight());
+    selectorScene.registerBeforeRender(function () {
+        const viewport = selectorCamera.viewport.toGlobal(engine.getRenderWidth(), engine.getRenderHeight());
         UiPanel.heightInPixels = viewport.height/10 + 10;
         leftButton.widthInPixels = viewport.width/5;
         leftButton.heightInPixels = viewport.height/10;
@@ -179,64 +133,177 @@
             }
         }
 
+    });    
+    
+    customizerScene.registerBeforeRender(function () {
+        const viewport = customizerCamera.viewport.toGlobal(engine.getRenderWidth(), engine.getRenderHeight());
+        configureButton.widthInPixels = viewport.width/5;
+        configureButton.heightInPixels = viewport.height/10;
     });
 
+    setTimeout(function() {
+        engine.stopRenderLoop();
+        engine.runRenderLoop(function () {
+            switch(sceneIndicator) {
+                case 0:
+                    advancedTexture.dispose();
+                    generateGUI();
+                    selectorScene.render();
+                    break;
+                case 1:
+                    advancedTexture.dispose();
+                    generateCustomizerGUI();
+                    customizerScene.render();
+                    break;
+            }
+        });
+    }, 500);
+
+    function generateGUI() {
+        switch (sceneIndicator) {
+            case 0:
+                advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI", true, selectorScene);
+                break;
+            case 1:
+                advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI", true, customizerScene);
+                break;
+        }
+
+        UiP = new BABYLON.GUI.StackPanel("vertical");
+        UiP.top = "40%";
+        UiP.fontSize = "20px";
+        advancedTexture.addControl(UiP);
+
+        UiPanel = new BABYLON.GUI.StackPanel("horizontal");
+        UiPanel.isVertical = false;
+        UiP.addControl(UiPanel);
+
+        leftButton = BABYLON.GUI.Button.CreateSimpleButton("leftButton", "<-");
+        leftButton.paddingRightInPixels = 20;
+        leftButton.cornerRadius = 5;
+        leftButton.color = "white";
+        leftButton.background = "black";
+        leftButton.onPointerDownObservable.add(()=> {
+            if (!cameraMoving) {
+                index = Math.min(locations.length-1, index+1);
+                cameraTarget = new BABYLON.Vector3(locations[index],.5,-2);
+                cameraMoving = true;
+            }
+        });
+        UiPanel.addControl(leftButton);
+
+        rightButton = BABYLON.GUI.Button.CreateSimpleButton("rightButton", "->");
+        rightButton.paddingLeftInPixels = 20;
+        rightButton.cornerRadius = 5;
+        rightButton.color = "white";
+        rightButton.background = "black";
+        rightButton.onPointerDownObservable.add(()=> {
+            if (!cameraMoving) {
+                index = Math.max(0, index-1);
+                cameraTarget = new BABYLON.Vector3(locations[index],.5,-2);
+                cameraMoving = true;
+            }
+        });
+        UiPanel.addControl(rightButton);
+
+        configureButton = BABYLON.GUI.Button.CreateSimpleButton("configureButton", "Configure");
+        configureButton.cornerRadius = 5;
+        configureButton.color = "white";
+        configureButton.background = "black";
+        configureButton.onPointerDownObservable.add(() => {
+            sceneIndicator = (sceneIndicator+1)%2;
+        });
+        UiP.addControl(configureButton);
+    }
+
+    function generateCustomizerGUI() {
+        switch (sceneIndicator) {
+            case 0:
+                advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI", true, selectorScene);
+                break;
+            case 1:
+                advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI", true, customizerScene);
+                break;
+        }
+
+        UiP = new BABYLON.GUI.StackPanel("vertical");
+        UiP.top = "40%";
+        UiP.fontSize = "20px";
+        advancedTexture.addControl(UiP);
+
+        configureButton = BABYLON.GUI.Button.CreateSimpleButton("configureButton", "Configure");
+        configureButton.cornerRadius = 5;
+        configureButton.color = "white";
+        configureButton.background = "black";
+        configureButton.onPointerDownObservable.add(() => {
+            sceneIndicator = (sceneIndicator+1)%2;
+        });
+        UiP.addControl(configureButton);
+    }
+
+
+    function rotationAdjustment() {
+        var alphaDone = alphaAdjustment();
+        var betaDone = betaAdjustment();
+        return alphaDone && betaDone;
+    }
+
     function locationAdjustment() {    
-        if (Math.abs(cameraTarget.x - camera.target.x) > 0.05) {
+        if (Math.abs(cameraTarget.x - selectorCamera.target.x) > 0.05) {
             var dx = 0;
-            if (cameraTarget.x > camera.target.x) {
+            if (cameraTarget.x > selectorCamera.target.x) {
                 dx = 0.05;
             } else {
                 dx = -0.05;
             }
-            camera.setTarget(new BABYLON.Vector3(camera.target.x+dx,.5,-2));
+            selectorCamera.setTarget(new BABYLON.Vector3(selectorCamera.target.x+dx,.5,-2));
             return false;
         } else {
-            camera.setTarget(cameraTarget);
+            selectorCamera.setTarget(cameraTarget);
             return true;
         }
     }
 
     function alphaAdjustment() {
-        if (Math.abs(camera.alpha - cameraAlpha) > 0.02) {
+        if (Math.abs(selectorCamera.alpha - cameraAlpha) > 0.02) {
             var da = 0;
-            if (cameraAlpha > camera.alpha) {
+            if (cameraAlpha > selectorCamera.alpha) {
                 da = 0.02;
             } else {
                 da = -0.02;
             }
-            camera.alpha = camera.alpha + da;
+            selectorCamera.alpha = selectorCamera.alpha + da;
             return false;
         } else {
-            camera.alpha = cameraAlpha;
+            selectorCamera.alpha = cameraAlpha;
             return true;
         }
     }
 
     function betaAdjustment() {
-        if (Math.abs(camera.beta - cameraBeta) > 0.02) {
+        if (Math.abs(selectorCamera.beta - cameraBeta) > 0.02) {
             var da = 0;
-            if (cameraBeta > camera.beta) {
+            if (cameraBeta > selectorCamera.beta) {
                 da = 0.02;
             } else {
                 da = -0.02;
             }
-            camera.beta = camera.beta + da;
+            selectorCamera.beta = selectorCamera.beta + da;
             return false;
         } else {
-            camera.beta = cameraBeta;
+            selectorCamera.beta = cameraBeta;
             return true;
         }
     }
     
     function renderGarage() {
-        BABYLON.SceneLoader.ImportMesh("", "https://raw.githubusercontent.com/Wagisigu/babylon/main/Assets/Models/parking_garage_free_download/", "scene.gltf", scene, function (meshes) {
+        BABYLON.SceneLoader.ImportMesh("", "https://raw.githubusercontent.com/Wagisigu/babylon/main/Assets/Models/parking_garage_free_download/", "scene.gltf", selectorScene, function (meshes) {
             renderCar1();
         });
     };
 
     function renderCar1() {
-        BABYLON.SceneLoader.ImportMesh("", "https://raw.githubusercontent.com/Wagisigu/babylon/main/Assets/Models/1953_cadillac_eldorado_convertible/", "scene.gltf", scene, function (meshes) {
+        BABYLON.SceneLoader.ImportMesh("", "https://raw.githubusercontent.com/Wagisigu/babylon/main/Assets/Models/1953_cadillac_eldorado_convertible/", "scene.gltf", selectorScene, function (meshes) {
             meshes[0].movePOV(locations[0],.75,-2);
             meshes[0].scaling = new BABYLON.Vector3(.005, .005, .005);
             meshes[0].rotate(new BABYLON.Vector3(0,1,0), Math.PI);
@@ -245,7 +312,7 @@
     };
 
     function renderCar2() {
-        BABYLON.SceneLoader.ImportMesh("", "https://raw.githubusercontent.com/Wagisigu/babylon/main/Assets/Models/1963_chevrolet_corvette_c2/", "scene.gltf", scene, function (meshes) {
+        BABYLON.SceneLoader.ImportMesh("", "https://raw.githubusercontent.com/Wagisigu/babylon/main/Assets/Models/1963_chevrolet_corvette_c2/", "scene.gltf", selectorScene, function (meshes) {
             meshes[0].movePOV(locations[1],.3,-2);
             meshes[0].scaling = new BABYLON.Vector3(.005, .005, .005);
             meshes[0].rotate(new BABYLON.Vector3(0,1,0), Math.PI);
@@ -254,7 +321,7 @@
     };
 
     function renderCar3() {
-        BABYLON.SceneLoader.ImportMesh("", "https://raw.githubusercontent.com/Wagisigu/babylon/main/Assets/Models/1965_chevrolet_c10/", "scene.gltf", scene, function (meshes) {
+        BABYLON.SceneLoader.ImportMesh("", "https://raw.githubusercontent.com/Wagisigu/babylon/main/Assets/Models/1965_chevrolet_c10/", "scene.gltf", selectorScene, function (meshes) {
             meshes[0].movePOV(locations[2],1.2,-2);
             meshes[0].scaling = new BABYLON.Vector3(.005, .005, .005);
             meshes[0].rotate(new BABYLON.Vector3(0,1,0), Math.PI);
@@ -263,15 +330,29 @@
     };
 
     function renderCar4() {
-        BABYLON.SceneLoader.ImportMesh("", "https://raw.githubusercontent.com/Wagisigu/babylon/main/Assets/Models/1968_chevrolet_impala/", "scene.gltf", scene, function (meshes) {
+        BABYLON.SceneLoader.ImportMesh("", "https://raw.githubusercontent.com/Wagisigu/babylon/main/Assets/Models/1968_chevrolet_impala/", "scene.gltf", selectorScene, function (meshes) {
             meshes[0].movePOV(locations[3],.175,-2);
             meshes[0].scaling = new BABYLON.Vector3(.005, .005, .005);
             meshes[0].rotate(new BABYLON.Vector3(0,1,0), Math.PI);
         });
     };
+    
+    function renderGaragex() {
+        BABYLON.SceneLoader.ImportMesh("", "https://raw.githubusercontent.com/Wagisigu/babylon/main/Assets/Models/parking_garage_free_download/", "scene.gltf", customizerScene, function (meshes) {
+            renderCar1x();
+        });
+    };
 
-    return scene;
+    function renderCar1x() {
+        BABYLON.SceneLoader.ImportMesh("", "https://raw.githubusercontent.com/Wagisigu/babylon/main/Assets/Models/1953_cadillac_eldorado_convertible/", "scene.gltf", customizerScene, function (meshes) {
+            meshes[0].scaling = new BABYLON.Vector3(.005, .005, .005);
+            meshes[0].rotate(new BABYLON.Vector3(0,1,0), Math.PI);
+        });
+    };
+
+    return selectorScene;
 };
+
 
                 window.initFunction = async function() {
                     
